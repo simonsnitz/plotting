@@ -6,14 +6,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
+import sys
+
+dataSheet = sys.argv[1]
 
 #create figure
 fig,ax = plt.subplots()
 
 #create a dataframe
 dfe = pd.DataFrame()
-data = pd.read_csv("testData.csv")
-
+#data = pd.read_csv("testData.csv")
+data = pd.read_csv(str(dataSheet))
 
 #calculate the background
 bkgrd = data.loc[:,"DH10B"].mean()
@@ -61,41 +64,53 @@ for i in numCon:
         counter += 2
 
 #define sigmoid function
-def sigmoid(x, a, b, c, d):
-    return ((a-b) / (1.0 + np.exp(x - (c)) ** d)) +b
+#def sigmoid(x, a, b, c, d):
+#    return ((a-b) / (1.0 + np.exp(x - (c)) ** d)) +b
 
-x = np.linspace(0,20000,100000)
+#Hill sigmoid function
+def sigmoid(x, a, b, c):
+        return a * np.power(x,b) / (np.power(c,b) + np.power(x,b))
+
+x = np.linspace(0.1,250,100000)
 xdata = data.iloc[:,0]
-colorLines = ['b-','g-','r-','c-','y-']
+colors = ['#0099ff','#3372cc','#674c9a','#9a2667','#ce0035']
+colorLines = []
+for i in colors:
+    colorLines.append(str(i)+'-')
+colorDots = []
+for i in colors:
+    dot = str(i)
+    colorDots.append(dot)
+    colorDots.append(dot)
+    colorDots.append(dot)
+print(colorDots)
+
 #Loop through mutants and plot fitted sigmoid functions
+initParam = np.array([1.0,1.0,1.0])
 counter = 0
 for i in avgLabels:
-    popt, pcov = curve_fit(sigmoid, xdata, data[i], p0 = [1.0, 65000.0, 1.0, 0.03])
-    plt.plot(x, sigmoid(x, *popt), colorLines[counter], label='fit')
+    popt, pcov = curve_fit(sigmoid, xdata, data[i],initParam,  maxfev=5000)
+            #p0 = [1.0, 20000.0, 0.01, 1.0])
+    plt.plot(x, sigmoid(x, *popt), color = colors[counter], label='fit')
     counter += 1
+    #print(popt)
 
 
 #print(data.columns.values)
 lig = data.iloc[:,0]
-colorDots = ['bo','bo','bo','go','go','go','ro','ro','ro','co','co','co','yo','yo','yo']
+#colorDots = ['bo','bo','bo','go','go','go','ro','ro','ro','co','co','co','yo','yo','yo']
+
+
+
 for i in range(1,16):
     variant = data.columns.values[i]
-    plt.plot(lig, data.loc[:,variant],colorDots[i-1])
+    plt.plot(lig, data.loc[:,variant],color = colorDots[i-1], marker='o', linestyle='None')
 
-'''
-#plot individual data points
-    #set x axis
-lig = data.iloc[:,0]
-    #loop through this part. need array of names and array of colors for dots.
-plt.plot(lig, data.loc[:,'NOS3-1'], 'bo')
-plt.plot(lig, data.loc[:,'NOS3-2'], 'bo')
-plt.plot(lig, data.loc[:,'NOS3-3'], 'bo')
-'''
 #extract compound name from data frame
 compound = str(data.columns.values[0])
 
-plt.xlim(0.05,200)
-plt.ylim(-1000,80000)
+plt.xlim(0.075,300)
+#plt.ylim(-1000,80000)
 plt.ylabel('Fluorescence (RFU/OD600)', fontsize=20)
 plt.xlabel(compound+' (uM)', fontsize=20)
 plt.title('RamR response to '+compound, fontsize=25)
