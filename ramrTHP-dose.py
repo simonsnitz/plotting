@@ -1,5 +1,3 @@
-##import matplotlib.pyplot as plt
-
 ## Work the best so far! Curve fits nicely and ymin/ymax don't have to be 0 and 1!
 
 import matplotlib.pyplot as plt
@@ -7,6 +5,9 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 import sys
+import matplotlib.ticker as ticker
+
+plt.rcParams['font.family'] = 'Gargi'
 
 dataSheet = sys.argv[1]
 
@@ -63,6 +64,16 @@ for i in numCon:
         data.loc[i,avgLabels[n]] = data.loc[i,meanLabels[counter]:meanLabels[(counter+1)]].mean()
         counter += 2
 
+
+#create new dataframe for standard deviation values
+stdBkgrd = pd.DataFrame()
+
+# ?or not?
+
+
+
+
+'''
 #define sigmoid function
 #def sigmoid(x, a, b, c, d):
 #    return ((a-b) / (1.0 + np.exp(x - (c)) ** d)) +b
@@ -71,7 +82,7 @@ for i in numCon:
 def sigmoid(x, a, b, c):
         return a * np.power(x,b) / (np.power(c,b) + np.power(x,b))
 
-x = np.linspace(0.1,250,100000)
+x = np.linspace(0,250,100000)
 xdata = data.iloc[:,0]
 colors = ['#0099ff','#3372cc','#674c9a','#9a2667','#ce0035']
 colorLines = []
@@ -86,7 +97,7 @@ for i in colors:
 print(colorDots)
 
 #Loop through mutants and plot fitted sigmoid functions
-initParam = np.array([1.0,1.0,1.0])
+initParam = np.array([1.0,3.0,1.0])
 counter = 0
 for i in avgLabels:
     popt, pcov = curve_fit(sigmoid, xdata, data[i],initParam,  maxfev=5000)
@@ -109,12 +120,51 @@ for i in range(1,16):
 #extract compound name from data frame
 compound = str(data.columns.values[0])
 
-plt.xlim(0.075,300)
-#plt.ylim(-1000,80000)
+plt.xlim(0.05,300)
 plt.ylabel('Fluorescence (RFU/OD600)', fontsize=20)
 plt.xlabel(compound+' (uM)', fontsize=20)
-plt.title('RamR response to '+compound, fontsize=25)
+plt.title('RamR variant response to '+compound, fontsize=25)
+#should be symlog, but tick spacing gets screwed up
 ax.set_xscale('log')
-ax.tick_params(axis='both', which='major', labelsize='18')
+ax.tick_params(axis='both', which='major', length=2, width=1, labelsize='18')
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+
+#ax.xaxis.set_major_locator(ticker.MultipleLocator(10))
+ax.legend(labels, prop={'size':15})
 
 plt.show()
+'''
+
+
+#script for plotting background bar charts
+
+#fig, ax = plt.subplots()
+#index = np.arange(5)
+bar_width = 0.5
+
+palette = ['#0093FF', '#00D100', '#FBBE00', '#FF2E2E', '#DC2EFF']
+avgBkgrd = data.iloc[0][17:]
+dots = data.iloc[0][1:16]
+
+counter = 0
+for i in range(0,5):
+    plt.scatter(labels[i],dots[counter], s=100, color= palette[i], edgecolors='#000000', zorder=1)
+    plt.scatter(labels[i],dots[counter+1], s=100, color= palette[i], edgecolors='#000000', zorder=2)
+    plt.scatter(labels[i],dots[counter+2], s=100, color= palette[i], edgecolors='#000000', zorder=3)
+    counter+= 3                
+    plt.bar(labels[i], avgBkgrd[i], bar_width, color= palette[i], label= labels[i], edgecolor="#000000")
+
+plt.xlabel('RamR variant', fontsize=16)
+plt.ylabel('Fluorescence (RFU/OD600)', fontsize=16)
+plt.title('Transcriptional leak of evolved RamR variants', fontsize=18)
+plt.legend()
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.tick_params(axis='both', which='major', labelsize=14)
+plt.show()
+
+
+
+
+#print(data.iloc[0][17:])
