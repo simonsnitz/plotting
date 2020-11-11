@@ -16,7 +16,7 @@ plt.rcParams['font.family'] = 'Gargi'
 
 generation = sys.argv[1]
 
-#enter generation number
+#automatically create generation number
 gen = str(generation[3])
 
 #list protein names
@@ -102,6 +102,7 @@ for n in range(0,5):
     for i in range(0,5): 
         foldOrtho.loc[n,i] = avgOrtho.iloc[n,i]/avgOrtho.iloc[n,5]
 
+foldOrtho = foldOrtho.T
 
 #custom colormap function
 def NonLinCdict(steps, hexcol_array):
@@ -120,11 +121,12 @@ cdict = NonLinCdict(th, hc)
 cm = LinearSegmentedColormap('test', cdict)
 
 #increase font size by a little
-#sns.set(font_scale=1.2)
+sns.set(font_scale=1.5)
 
 #create seaborn heatmap
-ax = sns.heatmap(foldOrtho, vmin=0, vmax= 1000, annot=True, fmt='.3g', xticklabels= compounds, yticklabels= regulators, cmap=cm)
-ax.set_title("Orthogonality of " +first+ " Generation Sensors")
+ax = sns.heatmap(foldOrtho, vmin=0, vmax= 1000, xticklabels= regulators, linewidths=1, linecolor="#7a7a7a", cmap=cm)
+#ax.set_title("Orthogonality of " +first+ " Generation Sensors")
+plt.xticks(rotation=45)
 plt.show()
 
 

@@ -41,7 +41,7 @@ for i in range(1,len(data.iloc[0]) -1):
 
 #Generate variant name labels from column labels. Loop array values are hard-coded, assume we have WT and 4 mutants to compare. Can change later...
 labels = []
-for i in [1,4,7,10,13]:
+for i in [1,4,7]:
     labels.append(data.columns.values[i][:-2])
 
 #Generate 'average' variant labels.
@@ -50,13 +50,13 @@ for i in range(0,len(labels)):
     avgLabels[i] = labels[i]+'avg'
 
 #Add new columns for variant's fluorescence averages. Numbers 5 and 12 are hard coded here, assumes you have WT and 4 mutants, 12 concentrations.
-numCon = list(range(0,12))
-for i in range(0,5):
+numCon = list(range(0,9))
+for i in range(0,3):
     data[avgLabels[i]] = numCon
 
 #create an array of labels used to generate mean. For example ['WT-1','WT-3', ...]
 meanLabels = []
-for i in [1,3,4,6,7,9,10,12,13,15]:
+for i in [1,3,4,6,7,9]:
     meanLabels.append(data.columns.values[i])
 #Fill in data for average values. Abstracted! Assumes you have 3 data points you're averaging.
 for i in numCon:
@@ -99,10 +99,10 @@ print(colorDots)
 
 #Loop through mutants and plot fitted sigmoid functions
 #initParam = np.array([1.0,0.93,1.0])
-initParam = np.array([1.0,1.0,5.0])
+initParam = np.array([1.0,2.0,5.0])
 counter = 0
 for i in avgLabels:
-    popt, pcov = curve_fit(sigmoid, xdata, data[i],initParam,  maxfev=5000)
+    popt, pcov = curve_fit(sigmoid, xdata, data[i],initParam,  maxfev=50000)
             #p0 = [1.0, 20000.0, 0.01, 1.0])
     plt.plot(x, sigmoid(x, *popt), color = colors[counter], label='fit')
     counter += 1
@@ -115,7 +115,7 @@ lig = data.iloc[:,0]
 
 
 
-for i in range(1,16):
+for i in range(1,10):
     variant = data.columns.values[i]
     plt.plot(lig, data.loc[:,variant],color = colorDots[i-1], marker='o', linestyle='None')
 
@@ -125,8 +125,9 @@ compound = str(data.columns.values[0])
 plt.xlim(0.05,300)
 plt.ylim(0,75000)
 plt.ylabel('Fluorescence (RFU/OD600)', fontsize=20)
-plt.xlabel(compound+' (uM)', fontsize=20)
-plt.title('RamR variant response to '+compound, fontsize=25)
+plt.xlabel('Alkaloid (uM)', fontsize=20)
+plt.title('RamR THP4-A4 response to BIAs', fontsize=24)
+        #+compound, fontsize=25)
 #should be symlog, but tick spacing gets screwed up
 ax.set_xscale('log')
 ax.tick_params(axis='both', which='major', length=2, width=1, labelsize='18')

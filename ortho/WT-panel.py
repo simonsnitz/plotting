@@ -9,14 +9,15 @@ import statistics as stat
 import matplotlib.font_manager as mfm
 mfm.findSystemFonts(fontpaths=None, fontext='ttf')
 
-sns.set(font_scale=1.3)
+sns.set(font_scale=1.5)
 plt.rcParams['font.family'] = 'Gargi'
 #plt.rcParams['font.freefont'] = 'FreeMono.ttf'
 
 
+'''
 generation = sys.argv[1]
 
-#enter generation number
+#automatically create generation number
 gen = str(generation[3])
 
 #list protein names
@@ -102,6 +103,12 @@ for n in range(0,5):
     for i in range(0,5): 
         foldOrtho.loc[n,i] = avgOrtho.iloc[n,i]/avgOrtho.iloc[n,5]
 
+foldOrtho = foldOrtho.T
+'''
+compounds = ["Glaucine", "Noscapine", "Papaverine", "Rotundine", "Tetrahydropapaverine"]
+wtData = [1.97, 1.79, 1.98, 4.30, 12.1]
+#foldOrtho = pd.DataFrame({"WT": wtData}, index= compounds)
+foldOrtho = pd.DataFrame({"WT": wtData})
 
 #custom colormap function
 def NonLinCdict(steps, hexcol_array):
@@ -123,8 +130,11 @@ cm = LinearSegmentedColormap('test', cdict)
 #sns.set(font_scale=1.2)
 
 #create seaborn heatmap
-ax = sns.heatmap(foldOrtho, vmin=0, vmax= 1000, annot=True, fmt='.3g', xticklabels= compounds, yticklabels= regulators, cmap=cm)
-ax.set_title("Orthogonality of " +first+ " Generation Sensors")
+ax = sns.heatmap(foldOrtho, vmin=0, vmax= 1000, linewidths=1, linecolor="#7a7a7a", cmap=cm)
+#ax = sns.heatmap(foldOrtho, vmin=0, vmax= 1000, annot=True, fmt='.3g', xticklabels= [], yticklabels= compounds, cmap=cm)
+#ax.set_title("Orthogonality of " +first+ " Generation Sensors")
+#ax.set_title("Orthogonality of WT RamR")
+plt.xticks(rotation=45)
 plt.show()
 
 
