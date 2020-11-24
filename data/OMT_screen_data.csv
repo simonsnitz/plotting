@@ -1,0 +1,12 @@
+Label,value 1,value 2,value 3
+Title,Activity comparison of several BIA OMTs,,
+Xtitle,OMT,,
+Ytitle,Fold change in fluorescence,,
+TAA,1,1,1
+4OMT,9.78,10.35,10.53
+6OMT,1.15,1.18,1.24
+EcOMT,3.09,3.02,3.21
+PbOMT,2.1,2.09,1.83
+Gf1OMT,15.43,15.4,15.55
+Gf2OMT,1.88,1.93,1.96
+Gf6OMT,1,1,1.02
