@@ -36,6 +36,9 @@ palette = ['#999999', '#999999','#999999','#999999', '#999999', '#2E6AFF', '#999
 labels = data.loc[3:]['Label'].values
 
 avgFluo = data.mean(axis=1)[3:].values
+avgFluoErr = data.std(axis=1)[3:].values
+
+
 maxFluo = max(avgFluo)
 
 fluo = []
@@ -51,12 +54,15 @@ offset = lambda p: transforms.ScaledTranslation(p/72.0, 0, plt.gcf().dpi_scale_t
 trans = plt.gca().transData
 
 for i in range(0,len(labels)):
+    
     plt.scatter(labels[i], fluo[counter], s=120, facecolor="None",edgecolors='#000000', zorder=1, linewidth=2.5, transform=trans+offset(-10))
+    
     plt.scatter(labels[i], fluo[counter+1], s=120, facecolor="None", edgecolors='#000000', zorder=2, linewidth=2.5)
+    
     plt.scatter(labels[i], fluo[counter+2], s=120, facecolor="None", edgecolors='#000000', zorder=3, linewidth=2.5, transform=trans+offset(10))
     counter+=3
-    #plt.bar(labels[i], avgFluo[i], bar_width, color=palette[i], edgecolor='#000000', zorder=0, linewidth=4)
-    plt.bar(labels[i], avgFluo[i], bar_width, color=(0,0,1,(avgFluo[i]/maxFluo)), edgecolor='#000000', zorder=0, linewidth=4)
+
+    plt.bar(labels[i], avgFluo[i], bar_width, color=(0,0,1,(avgFluo[i]/maxFluo)**2), edgecolor='#000000', zorder=0, linewidth=4, yerr=avgFluoErr[i], error_kw=dict(lw=2, capsize=5, capthick=2))
 
 
 plt.xticks(labels, fontsize=16)
@@ -67,3 +73,4 @@ ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 ax.tick_params(axis='both', which='major', labelsize=16)
 plt.show()
+
