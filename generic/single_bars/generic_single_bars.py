@@ -47,7 +47,7 @@ for i in range(3,(len(labels)+3)):
     for x in data.iloc[i][1:]:
         fluo.append(float(x))
 
-
+print(fluo)
 counter = 0
 
 offset = lambda p: transforms.ScaledTranslation(p/72.0, 0, plt.gcf().dpi_scale_trans)
@@ -72,5 +72,5 @@ plt.title(title, fontsize=24)
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 ax.tick_params(axis='both', which='major', labelsize=16)
-plt.show()
+#plt.show()
 
