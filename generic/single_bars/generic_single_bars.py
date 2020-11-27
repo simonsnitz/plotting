@@ -10,7 +10,7 @@ plt.rcParams['font.family'] = 'Gargi'
 
 #dataSheet = sys.argv[1]
 
-p = Path('../../data')
+p = Path('../../data/single_bars')
 dataSheet = p / "OMT_screen_data.csv"
 
 #change this?
@@ -29,10 +29,6 @@ title = data.iloc[0][1]
 xtitle = data.iloc[1][1]
 ytitle = data.iloc[2][1]
 
-palette = ['#999999', '#999999','#999999','#999999', '#999999', '#2E6AFF', '#999999', '#999999']
-#palette = ['#DC2EFF', '#FFf92f','#FF2E2E','#00D100', '#FF620E', '#2E6AFF', '#696969', '#EEEEEE']
-#y_pos = np.arange(len(labels))
-
 labels = data.loc[3:]['Label'].values
 
 avgFluo = data.mean(axis=1)[3:].values
@@ -47,7 +43,6 @@ for i in range(3,(len(labels)+3)):
     for x in data.iloc[i][1:]:
         fluo.append(float(x))
 
-print(fluo)
 counter = 0
 
 offset = lambda p: transforms.ScaledTranslation(p/72.0, 0, plt.gcf().dpi_scale_trans)
@@ -72,5 +67,6 @@ plt.title(title, fontsize=24)
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 ax.tick_params(axis='both', which='major', labelsize=16)
-#plt.show()
+
+plt.show()
 
