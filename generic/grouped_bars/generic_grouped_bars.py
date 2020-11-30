@@ -12,6 +12,8 @@ plt.rcParams['font.family'] = 'Gargi'
 
 p = Path('../../data/grouped_bars')
 #dataSheet = p / "OMT_evolution_data.csv"
+
+#data to import (this part changes)
 dataSheet = p / "THP_biosynthesis_dopamine.csv"
 
 #change this?
