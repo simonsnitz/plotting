@@ -14,14 +14,21 @@ plt.rcParams['font.family'] = 'Gargi'
 p = Path('../../data/dose_response')
 
 #this part changes
-dataSheet = p / "NOSdata_new.xlsx"
+#dataSheet = p / "GLAUdata_new.xlsx"
+#dataSheet = p / "NOSdata_new2.xlsx"
+#dataSheet = p / "PAPdata_new.xlsx"
+dataSheet = p / "ROTUdata_new.xlsx"
+#dataSheet = p / "THPdata_new.xlsx"
+#dataSheet = p / "THPa4_selectivity.xlsx"
 
 #create figure
 fig, ax = plt.subplots()
 
 #load data from xlsx file
-data = pd.read_excel(dataSheet, sheet_name=0)
-metadata = pd.read_excel(dataSheet, sheet_name=1)
+fluorescence = pd.read_excel(dataSheet, sheet_name="fluorescence")
+od600 = pd.read_excel(dataSheet, sheet_name="od600")
+metadata = pd.read_excel(dataSheet, sheet_name="metadata")
+
 
 #extract useful metadata
 title = metadata.loc[0,"Title"]
@@ -29,10 +36,23 @@ Xtitle = metadata.loc[0,"Xtitle"]
 Ytitle = metadata.loc[0,"Ytitle"]
 colors = metadata.loc[:,"Colors"].values
 
+#create new dataframe for fluorescence/od600
+data = fluorescence.copy()
+for i in list(data.keys()):
+    try:
+        data[i] = data[i]/od600[i]
+    except:
+        data[i] = data[i]
+
+#set array for x-axis (ligand concentration)
+xdata = fluorescence.loc[:,"Ligand concentration"].values
+
+print(xdata)
+
 max_val = 10**(len(str(int(data.max().max())))-1)
 
 #calculate the background.
-bkgrd = data.loc[:,"DH10B"].mean()
+bkgrd = data.loc[:,"REFERENCE"].mean()
 
 #update dataframe by subtracting background from each value           
     #Assumes DH10B column is last column.
@@ -53,11 +73,11 @@ avgFluo = []
 avgFluoErr = []
 for i in iterArray:
     avg =  [mean([float(x) for x in data.iloc[y][i:i+3].values]) 
-        for y in range(0,8+4)]
+        for y in range(0,len(xdata))]
     avgFluo.append(avg)
 
     avgErr =  [stdev([float(x) for x in data.iloc[y][i:i+3].values]) 
-        for y in range(0,8+4)]
+        for y in range(0,len(xdata))]
     avgFluoErr.append(avgErr)
 
 
@@ -66,10 +86,9 @@ def sigmoid(x, a, b, c):
         return a * np.power(x,b) / (np.power(c,b) + np.power(x,b))
 
 #create x-axis ticks. large number in 3rd position of linspace "100,000" needed to avoid choppy line.
-x = np.linspace(0,100,100000)
+    #this needs to change based on the x-axis limits
+x = np.linspace(0,250,100000)
 
-#set array for x-axis (ligand concentration)
-xdata = data.iloc[:,0]
 
 #create list of colors for dots (individual data points)
     #still working on making this list with list comprehension
@@ -96,13 +115,19 @@ for i in range(1,numColumns-1):
     plt.plot(xdata, data.loc[:,variant],color = colorDots[i-1], marker='o', linestyle='None')
 
 #Extend the xaxis max and min limits to give space on xaxis
-xaxis_max = float(data.iloc[-1,0])*2
-xaxis_min = float(data.iloc[1,0])/2
+
+#xaxis_max = float(fluorescence.iloc[-1,0])*2
+xaxis_max = 300
+#xaxis_min = float(fluorescence.iloc[1,0])/8
+xaxis_min = 0.05
 
 plt.xlim(xaxis_min, xaxis_max)
+
+plt.ylim(0,7.5)
+
 plt.ylabel(Ytitle, fontsize=20)
 plt.xlabel(Xtitle, fontsize=20)
-plt.title(title, fontsize=25)
+#plt.title(title, fontsize=25)
 #should be symlog, but tick spacing gets screwed up
 ax.set_xscale('log')
 ax.tick_params(axis='both', which='major', length=2, width=1, labelsize='18')
@@ -112,6 +137,6 @@ ax.spines['top'].set_visible(False)
 #ax.xaxis.set_major_locator(ticker.MultipleLocator(10))
 ax.legend(labels, prop={'size':15})
 
-fig.set_size_inches(12,9)
+fig.set_size_inches(9,9)
 
 plt.show()

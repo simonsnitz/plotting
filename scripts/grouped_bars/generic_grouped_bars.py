@@ -14,11 +14,12 @@ plt.rcParams['font.family'] = 'Gargi'
 
 #point to file for data import (exact file changes)
 p = Path('../../data/grouped_bars')
-dataSheet = p / "THP_biosynthesis_dopamine.xlsx"
+dataSheet = p / "proxe_bia_screen.xlsx"
+#dataSheet = p / "THP_biosynthesis_dopamine.xlsx"
 #dataSheet = p / "OMT_evolution_data.xlsx"
 
 #set bar width. Change this dynamically?
-bar_width = 0.3
+bar_width = 0.15
 
 
 #load metadata from excel file
@@ -55,12 +56,10 @@ elif ytitle == "Fold change in fluorescence":
     max_val = 1
 else:
     raise ValueError("y-axis title must be 'Fluorescence (RFU/OD)' or 'Fold change in fluorescence'")
-
 for i in range(1,len(data.iloc[0]) -1):
     col = data.iloc[:,i]
     for n in range(0,len(col)):
         data.iloc[:,i][n] = col[n]/max_val
-
 
 #create an array for the number of conditions you have
 iterArray = [1+x*3 for x in range(0,int(len(data.columns[1:])/3))]
@@ -95,7 +94,8 @@ offset = lambda p: transforms.ScaledTranslation(p/72.0, 0, plt.gcf().dpi_scale_t
 trans = plt.gca().transData
 
 #create a list for positioning of each set of grouped bars next to each other
-bar = [-bar_width,0,bar_width]
+#bar = [-bar_width,0,bar_width]
+bar = [2*(-bar_width),-bar_width,0,bar_width, 2*bar_width, 3*bar_width]
 
 
 #plot bar chart averages with error bars
@@ -105,16 +105,17 @@ numBars = len(iterArray)*len(xlabels)
 dotSize = (500/(numBars))**1.2
 offsetSize = (1/(numBars))*200
 
+
 for i in range(0,len(avgFluo)):
-    plt.bar(x+ bar[i], avgFluo[i], bar_width, label=legendLabels[i], edgecolor='#000000', color=colors[i], zorder=0, linewidth=2, yerr=avgFluoErr[i], error_kw=dict(lw=1.3, capsize=5, capthick=1.3))
-    
+    plt.bar(x+ bar[i], avgFluo[i], bar_width, label=legendLabels[i], edgecolor='#000000', color=colors[i], zorder=0, linewidth=2, yerr=avgFluoErr[i], error_kw=dict(lw=1, capsize=5, capthick=1))
+'''    
     #plot individual data points
     for j in range(0,len(xlabels)):
         plt.scatter(x[j]+bar[i], fluo[counter], s=dotSize, facecolor="None", edgecolors='#000000', zorder=1, linewidth=2, transform=trans+offset(-offsetSize))
         plt.scatter(x[j]+bar[i], fluo[counter+1],s=dotSize, facecolor="None", edgecolors='#000000', zorder=2, linewidth=2)
         plt.scatter(x[j]+bar[i], fluo[counter+2], s=dotSize, facecolor="None", edgecolors='#000000', zorder=3, linewidth=2, transform=trans+offset(offsetSize))
         counter+=3
-
+'''
 
 #set axis/legend labels, axis tick marks, and title
 ax.set_xticks(x)
