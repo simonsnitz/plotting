@@ -12,7 +12,7 @@ mfm.findSystemFonts(fontpaths=None, fontext='ttf')
 sns.set(font_scale=1.5)
 plt.rcParams['font.family'] = 'Gargi'
 #plt.rcParams['font.freefont'] = 'FreeMono.ttf'
-
+fig,ax = plt.subplots()
 
 '''
 generation = sys.argv[1]
@@ -108,7 +108,7 @@ foldOrtho = foldOrtho.T
 compounds = ["Glaucine", "Noscapine", "Papaverine", "Rotundine", "Tetrahydropapaverine"]
 wtData = [1.97, 1.79, 1.98, 4.30, 12.1]
 #foldOrtho = pd.DataFrame({"WT": wtData}, index= compounds)
-foldOrtho = pd.DataFrame({"WT": wtData})
+foldOrtho = pd.DataFrame({"WT": wtData}).T
 
 #custom colormap function
 def NonLinCdict(steps, hexcol_array):
@@ -130,11 +130,12 @@ cm = LinearSegmentedColormap('test', cdict)
 #sns.set(font_scale=1.2)
 
 #create seaborn heatmap
-ax = sns.heatmap(foldOrtho, vmin=0, vmax= 1000, linewidths=1, linecolor="#7a7a7a", cmap=cm)
+ax = sns.heatmap(foldOrtho, vmin=0, vmax= 1000, annot=True, fmt='.0f', linewidths=1, linecolor="#7a7a7a", cmap=cm)
 #ax = sns.heatmap(foldOrtho, vmin=0, vmax= 1000, annot=True, fmt='.3g', xticklabels= [], yticklabels= compounds, cmap=cm)
 #ax.set_title("Orthogonality of " +first+ " Generation Sensors")
 #ax.set_title("Orthogonality of WT RamR")
-plt.xticks(rotation=45)
+plt.yticks(rotation=0)
+fig.set_size_inches(10,2)
 plt.show()
 
 

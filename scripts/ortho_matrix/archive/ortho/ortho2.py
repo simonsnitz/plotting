@@ -9,10 +9,10 @@ import statistics as stat
 import matplotlib.font_manager as mfm
 mfm.findSystemFonts(fontpaths=None, fontext='ttf')
 
-sns.set(font_scale=1.3)
+sns.set(font_scale=1.5)
 plt.rcParams['font.family'] = 'Gargi'
 #plt.rcParams['font.freefont'] = 'FreeMono.ttf'
-
+fig,ax = plt.subplots()
 
 generation = sys.argv[1]
 
@@ -102,7 +102,7 @@ for n in range(0,5):
     for i in range(0,5): 
         foldOrtho.loc[n,i] = avgOrtho.iloc[n,i]/avgOrtho.iloc[n,5]
 
-foldOrtho = foldOrtho.T
+#foldOrtho = foldOrtho.T
 
 #custom colormap function
 def NonLinCdict(steps, hexcol_array):
@@ -124,9 +124,12 @@ cm = LinearSegmentedColormap('test', cdict)
 sns.set(font_scale=1.5)
 
 #create seaborn heatmap
-ax = sns.heatmap(foldOrtho, vmin=0, vmax= 1000, xticklabels= regulators, linewidths=1, linecolor="#7a7a7a", cmap=cm)
+ax = sns.heatmap(foldOrtho, vmin=0, vmax= 1000, annot=True,fmt='.0f',yticklabels= regulators, xticklabels= compounds, linewidths=1, linecolor="#7a7a7a", cmap=cm)
 #ax.set_title("Orthogonality of " +first+ " Generation Sensors")
+plt.yticks(rotation=0)
 plt.xticks(rotation=45)
+fig.set_size_inches(9,9)
+
 plt.show()
 
 

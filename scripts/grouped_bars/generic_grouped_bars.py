@@ -14,12 +14,12 @@ plt.rcParams['font.family'] = 'Gargi'
 
 #point to file for data import (exact file changes)
 p = Path('../../data/grouped_bars')
-dataSheet = p / "proxe_bia_screen.xlsx"
+#dataSheet = p / "proxe_bia_screen.xlsx"
 #dataSheet = p / "THP_biosynthesis_dopamine.xlsx"
-#dataSheet = p / "OMT_evolution_data.xlsx"
+dataSheet = p / "OMT_evolution_data.xlsx"
 
 #set bar width. Change this dynamically?
-bar_width = 0.15
+bar_width = 0.25
 
 
 #load metadata from excel file
@@ -94,8 +94,8 @@ offset = lambda p: transforms.ScaledTranslation(p/72.0, 0, plt.gcf().dpi_scale_t
 trans = plt.gca().transData
 
 #create a list for positioning of each set of grouped bars next to each other
-#bar = [-bar_width,0,bar_width]
-bar = [2*(-bar_width),-bar_width,0,bar_width, 2*bar_width, 3*bar_width]
+bar = [-bar_width,0,bar_width]
+#bar = [2*(-bar_width),-bar_width,0,bar_width, 2*bar_width, 3*bar_width]
 
 
 #plot bar chart averages with error bars
@@ -107,7 +107,7 @@ offsetSize = (1/(numBars))*200
 
 
 for i in range(0,len(avgFluo)):
-    plt.bar(x+ bar[i], avgFluo[i], bar_width, label=legendLabels[i], edgecolor='#000000', color=colors[i], zorder=0, linewidth=2, yerr=avgFluoErr[i], error_kw=dict(lw=1, capsize=5, capthick=1))
+    plt.bar(x+ bar[i], avgFluo[i], bar_width, label=legendLabels[i], edgecolor='#000000', color=colors[i], zorder=0, linewidth=3, yerr=avgFluoErr[i], error_kw=dict(lw=2, capsize=5, capthick=2))
 '''    
     #plot individual data points
     for j in range(0,len(xlabels)):
