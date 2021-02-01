@@ -8,6 +8,7 @@ import matplotlib.ticker as ticker
 import matplotlib.transforms as transforms
 from pathlib import Path 
 from statistics import mean, stdev
+import sys
 
 plt.rcParams['font.family'] = 'Gargi'
 
@@ -17,9 +18,11 @@ p = Path('../../data/dose_response')
 #dataSheet = p / "GLAUdata_new.xlsx"
 #dataSheet = p / "NOSdata_new2.xlsx"
 #dataSheet = p / "PAPdata_new.xlsx"
-dataSheet = p / "ROTUdata_new.xlsx"
+#dataSheet = p / "ROTUdata_new.xlsx"
 #dataSheet = p / "THPdata_new.xlsx"
 #dataSheet = p / "THPa4_selectivity.xlsx"
+dataSheet = p / "WT-FEN1-FEN2-FEN3_doseResponse.xlsx"
+#dataSheet = sys.argv[1]
 
 #create figure
 fig, ax = plt.subplots()
@@ -59,7 +62,10 @@ bkgrd = data.loc[:,"REFERENCE"].mean()
 for i in range(1,len(data.iloc[0]) -1):
     col = data.iloc[:,i]
     for n in range(0,len(col)):
-        data.iloc[:,i][n] = (col[n]-bkgrd)/max_val
+            #use this when DH10B is Reference
+        #data.iloc[:,i][n] = (col[n]-bkgrd)
+            #use this when THSSe_RFP is Reference
+        data.iloc[:,i][n] = (col[n]/bkgrd)
 
 
 #create an array for the number of biosensors you're comparing
@@ -80,14 +86,13 @@ for i in iterArray:
         for y in range(0,len(xdata))]
     avgFluoErr.append(avgErr)
 
-
 #Hill sigmoid function
 def sigmoid(x, a, b, c):
         return a * np.power(x,b) / (np.power(c,b) + np.power(x,b))
 
 #create x-axis ticks. large number in 3rd position of linspace "100,000" needed to avoid choppy line.
     #this needs to change based on the x-axis limits
-x = np.linspace(0,250,100000)
+x = np.linspace(1,5000,100000)
 
 
 #create list of colors for dots (individual data points)
@@ -116,18 +121,18 @@ for i in range(1,numColumns-1):
 
 #Extend the xaxis max and min limits to give space on xaxis
 
-#xaxis_max = float(fluorescence.iloc[-1,0])*2
-xaxis_max = 300
-#xaxis_min = float(fluorescence.iloc[1,0])/8
-xaxis_min = 0.05
+xaxis_max = float(fluorescence.iloc[-1,0])*2
+#xaxis_max = 5000
+xaxis_min = float(fluorescence.iloc[1,0])/4
+#xaxis_min = 1
 
 plt.xlim(xaxis_min, xaxis_max)
 
-plt.ylim(0,7.5)
+#plt.ylim(0,7.5)
 
 plt.ylabel(Ytitle, fontsize=20)
 plt.xlabel(Xtitle, fontsize=20)
-#plt.title(title, fontsize=25)
+plt.title(title, fontsize=25)
 #should be symlog, but tick spacing gets screwed up
 ax.set_xscale('log')
 ax.tick_params(axis='both', which='major', length=2, width=1, labelsize='18')

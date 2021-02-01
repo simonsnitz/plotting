@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import matplotlib.ticker as ticker
+from matplotlib.ticker import MaxNLocator
 import matplotlib.transforms as transforms
 import numpy as np
 from pathlib import Path
@@ -14,18 +15,12 @@ fig, ax = plt.subplots()
 plt.rcParams['font.family'] = 'Gargi'
 
 #point to file for data import (exact file changes)
-p = Path('../../data/grouped_bars')
-dataSheet = p / "proxe_supp.xlsx"
-#dataSheet = p / "proxe_bia_screen.xlsx"
-#dataSheet = p / "THP_biosynthesis_dopamine.xlsx"
-#dataSheet = p / "OMT_evolution_data.xlsx"
-
-#set bar width. Change this dynamically?
-bar_width = 0.25
+p = Path('../../data/time_course')
+dataSheet = p / "RamZ_selection_data.xlsx"
 
 
 #load metadata from excel file
-metadata = pd.read_excel(dataSheet, sheet_name=2)
+metadata = pd.read_excel(dataSheet, sheet_name="metadata")
 
 #set graph and axis titles
 title = metadata.loc[0,"Title"]
@@ -38,23 +33,37 @@ colors = metadata.loc[:,"Colors"].values
 fluorescence = pd.read_excel(dataSheet, sheet_name="fluorescence")
 od600 = pd.read_excel(dataSheet, sheet_name="od600")
 
+
 #create new dataframe for fluorescence/od600
-data = pd.DataFrame().reindex_like(fluorescence)
+rfu_od = pd.DataFrame().reindex_like(fluorescence)
 
 for i in list(fluorescence.keys()):
     try:
-        data[i] = fluorescence[i]/od600[i]
+        rfu_od[i] = fluorescence[i]/od600[i]
     except:
-        data[i] = fluorescence[i]
+        rfu_od[i] = fluorescence[i]
+
+
+    #set which dataset to use for plotting
+#data = fluorescence
+#ytitle = r'$RFU/OD$'
+
+data = od600
+ytitle = r'$OD_{600}$'
 
 
 #set X-axis condition labels
-xlabels = data.loc[0:]['Construct'].values
+xlabels = data.loc[0:]['Time'].values
+    #convert seconds to hours
+xlabels = [i/3600 for i in xlabels]
+xtitle = xtitle + " (hours)"
+
 x = np.arange(len(xlabels))
 
+''' This screws things up when plotting time_course data
 
 #remove zeros for rfu/od to simplify y-axis
-if ytitle == "Fluorescence (RFU/OD)" or "(RFU/OD)":
+if ytitle == "Fluorescence (RFU/OD)" or "RFU/OD600":
     max_val = 10**(len(str(int(data.iloc[:,1:-1].max().max())))-1)
     log10 = int(math.log10(max_val))
     ytitle = r'$(RFU/OD) \times 10^' + str(log10) +'$'
@@ -62,12 +71,12 @@ if ytitle == "Fluorescence (RFU/OD)" or "(RFU/OD)":
 elif ytitle == "Fold change in fluorescence":
     max_val = 1
 else:
-    raise ValueError("y-axis title must be 'Fluorescence (RFU/OD)' or 'Fold change in fluorescence'")
+    raise ValueError("y-axis title must be 'Fluorescence (RFU/OD)', 'RFU/OD600'  or 'Fold change in fluorescence'")
 for i in range(1,len(data.iloc[0]) -1):
     col = data.iloc[:,i]
     for n in range(0,len(col)):
         data.iloc[:,i][n] = col[n]/max_val
-
+'''
 
 #create an array for the number of conditions you have
 iterArray = [1+x*3 for x in range(0,int(len(data.columns[1:])/3))]
@@ -81,6 +90,7 @@ legendLabels = [data.columns[x][:-2] for x in iterArray]
 #create lists for averages and standard deviations of all conditions
 avgFluo = []
 avgFluoErr = []
+
 for i in iterArray:
     avg =  [mean([float(x) for x in data.iloc[y][i:i+3].values]) 
         for y in range(0,len(xlabels))]
@@ -90,38 +100,29 @@ for i in iterArray:
         for y in range(0,len(xlabels))]
     avgFluoErr.append(avgErr)
 
+'''
 #create a list of all individual data points
-fluo = []
-for i in iterArray:
-    for j in data.iloc[0:].values:
-        for k in list(j[i:i+3]):
-            fluo.append(float(k))
+#fluo = []
+#for i in iterArray:
+#    for j in data.iloc[0:].values:
+#        for k in list(j[i:i+3]):
+#            fluo.append(float(k))
+'''
 
-
-#function for positioning individual data points such that they don't overlap
-offset = lambda p: transforms.ScaledTranslation(p/72.0, 0, plt.gcf().dpi_scale_trans)
-trans = plt.gca().transData
-
-#create a list for positioning of each set of grouped bars next to each other
-    #2
-bar = [-(bar_width)*0.5,(bar_width)*0.5]
-    #3
-#bar = [-bar_width,0,bar_width]
-    #6
-#bar = [2*(-bar_width),-bar_width,0,bar_width, 2*bar_width, 3*bar_width]
-
-
-#plot bar chart averages with error bars
-counter = 0
-#dynamically adjust the size and spacing of dots according to number of bars
-numBars = len(iterArray)*len(xlabels)
-dotSize = (500/(numBars))**1.2
-offsetSize = (1/(numBars))*150
-
-
+#create datasets +/- error for plotting error as a "fill_between" visual
+avgFluoTop = [ [avgFluo[i][j] + avgFluoErr[i][j] for j in range(0,len(avgFluo[0]))]
+        for i in range(0,len(avgFluo))]
+avgFluoBottom = [ [avgFluo[i][j] - avgFluoErr[i][j] for j in range(0,len(avgFluo[0]))]
+        for i in range(0,len(avgFluo))]
+        
 for i in range(0,len(avgFluo)):
-    plt.bar(x+ bar[i], avgFluo[i], bar_width, label=legendLabels[i], edgecolor='#000000', color=colors[i], zorder=0, linewidth=3, yerr=avgFluoErr[i], error_kw=dict(lw=2, capsize=5, capthick=2))
+    
+    #plt.plot(xlabels, avgFluo[i], label=legendLabels[i], color=colors[i], zorder=0, linewidth=3)
+    #plt.fill_between(xlabels, avgFluoTop[i], avgFluoBottom[i], color=colors[i], alpha=0.5)
+    
+    plt.errorbar(xlabels, avgFluo[i], label=legendLabels[i], color=colors[i], zorder=0, linewidth=3, yerr=avgFluoErr[i], elinewidth=2)
 
+'''
     if numBars < 13:
         #plot individual data points if there are fewer than 10 bars.
         for j in range(0,len(xlabels)):
@@ -129,17 +130,16 @@ for i in range(0,len(avgFluo)):
             plt.scatter(x[j]+bar[i], fluo[counter+1],s=dotSize, facecolor="None", edgecolors='#000000', zorder=2, linewidth=2)
             plt.scatter(x[j]+bar[i], fluo[counter+2], s=dotSize, facecolor="None", edgecolors='#000000', zorder=3, linewidth=2, transform=trans+offset(offsetSize))
             counter+=3
-
+'''
 
 #set axis/legend labels, axis tick marks, and title
-ax.set_xticks(x)
-ax.set_xticklabels(xlabels)
 ax.set_xlabel(xtitle, fontsize=18)
 ax.set_ylabel(ytitle, fontsize=18)
 plt.title(title, fontsize=18)
 ax.legend(prop={'size':15})
 
 #styling
+ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 ax.tick_params(axis='both', which='major', labelsize=16)
@@ -150,15 +150,3 @@ fig.set_size_inches(12,9)
 plt.show()
 
 
-'''
-#save the figure as png and as a pdf report with metadata
-new_figure = plt.savefig("THP_biosynthesis_dopamine.png",dpi=300)
-
-#save as a pdf
-pdf = FPDF()
-#pdf.set_font("Garamond",16)
-pdf.add_page()
-pdf.image(new_figure)
-
-pdf.output("THP_biosynthesis_dopamine.pdf","F")
-'''
