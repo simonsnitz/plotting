@@ -9,7 +9,17 @@ import matplotlib.transforms as transforms
 from pathlib import Path 
 from statistics import mean, stdev
 import math
-import sys
+#import sys
+import argparse
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-t", "--table", help="Include table")
+parser.add_argument("-d", "--data", help="Plotting data")
+
+args = parser.parse_args()
+
+
 
 #plt.rcParams['font.family'] = 'Gargi'
 
@@ -23,7 +33,8 @@ p = Path('../../data/dose_response')
 #dataSheet = p / "THPdata_new.xlsx"
 #dataSheet = p / "THPa4_selectivity.xlsx"
 #dataSheet = p / "WT-FEN1-FEN2-FEN3_doseResponse.xlsx"
-dataSheet = sys.argv[1]
+dataSheet = args.data
+#sys.argv[1]
 
 #create figure
 fig, ax = plt.subplots()
@@ -127,11 +138,11 @@ for i in colors:
 
 #Loop through mutants and plot fitted sigmoid functions. May need to change these parameters.
 
-#initParam = np.array([1.0,0.9,5.0])
+initParam = np.array([1.0,0.9,5.0])
 median_x = np.median(x)
 half_y = float(max(data.max().values[0:-1]))/2
 
-initParam = (median_x, half_y, 5)
+#initParam = (median_x, half_y, 5)
 
 #plot curve_fit line based on averages data
 EC50 = []
@@ -158,25 +169,27 @@ for i in range(1,numColumns-1):
 plt.xlim(xaxis_min, xaxis_max)
 #plt.ylim(0,7.5)
 
+
+if args.table == "yes":
+
     #create table for displaying the calculated EC50s and Background signals for each variant
-the_table = plt.table(cellText = [EC50,Background],
-        rowLabels = ["EC50","Background"],
-        colColours= colors,
-        colLabels = labels,
-        bbox=[0.05,-0.5,1,0.25])
+    the_table = plt.table(cellText = [EC50,Background],
+            rowLabels = ["EC50 (uM)","Background"],
+            colColours= colors,
+            colLabels = labels,
+            bbox=[0.05,-0.5,1,0.25])
 
-the_table.set_fontsize(12)
-
-    #position plot higher to avoid clashing with table
-plt.subplots_adjust(bottom=0.3)
+    the_table.set_fontsize(12)
+        #position plot higher to avoid clashing with table
+    plt.subplots_adjust(bottom=0.3)
 
 plt.ylabel(Ytitle, fontsize=20)
 plt.xlabel(Xtitle, fontsize=20)
-plt.title(title, fontsize=25)
+plt.title(title, fontsize=22)
 #should be symlog, but tick spacing gets screwed up
 ax.set_xscale('log')
 ax.get_xaxis().set_major_formatter(ticker.ScalarFormatter())
-#ax.get_xaxis().set_major_formatter(ticker.FormatStrFormatter('%.1f'))
+ax.get_xaxis().set_major_formatter(ticker.FormatStrFormatter('%.1f'))
 
 ax.tick_params(axis='both', which='major', length=2, width=1, labelsize='18')
 ax.spines['right'].set_visible(False)
