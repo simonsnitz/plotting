@@ -115,6 +115,12 @@ for i in iterArray:
         for y in range(0,len(xdata))]
     avgFluoErr.append(avgErr)
 
+print(data)
+
+exit()
+
+
+
 Bkgrd = [round(x[0]*max_val,1) for x in avgFluo]
 BkgrdErr = [round(x[0]*max_val,1) for x in avgFluoErr]
 Background = [str(Bkgrd[x])+" +/- "+str(BkgrdErr[x]) for x in range(0,len(Bkgrd))]

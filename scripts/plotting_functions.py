@@ -4,6 +4,7 @@ import math
 from statistics import mean, stdev
 import warnings 
 
+pd.options.mode.chained_assignment = None
 
 def load_data(dataSheet):
     metadata = pd.read_excel(dataSheet, sheet_name="metadata")
@@ -30,11 +31,15 @@ def set_titles_labels(metadata, data):
     xtitle = metadata.loc[0,"Xtitle"]
     ytitle = metadata.loc[0,"Ytitle"]
         #set X-axis condition labels
-    xlabels = data.loc[0:]['Construct'].dropna().values
+    xlabel_name =  data.columns[0]
+    xlabels = data.loc[0:][xlabel_name].dropna().values
         #set number X-axis conditions
     x = np.arange(len(xlabels))
 
-    return title, xtitle, ytitle, xlabels, x
+    if xlabel_name == "Construct" or xlabel_name == "Time":
+        return title, xtitle, ytitle, xlabels, x
+    else:
+        return title, xtitle, ytitle, xlabels
 
 
 def set_colors(metadata, labels):
@@ -46,7 +51,7 @@ def set_colors(metadata, labels):
         print("colors = "+str(colors))
         print("labels = "+str(labels))
 
-        warnings.warn("Invalid number of colors given. Need to provide one color or number equivalent to number of conditions. Default color set to boring blue")
+        warnings.warn("Invalid number of colors given. Need to provide one color or number equivalent to number of conditions. Default color set to boring blue", stacklevel=2)
         colors = ["#12b0ff"]*len(labels)
     return colors
 
@@ -88,12 +93,12 @@ def create_avg_std_indiv_lists(iterArray, data, num_reps, xlabels):
         avgFluo = []
         avgFluoErr = []
         for i in iterArray:
-            avg =  [mean([float(x) for x in data.iloc[y][i:i+num_reps].values]) 
+            avg =  [mean([float(x) for x in data.iloc[y][i:i+num_reps].values if str(x) != "nan"]) 
                 for y in range(0,len(xlabels))]
             avgFluo.append(avg)
     
             if num_reps > 1:
-                avgErr =  [stdev([float(x) for x in data.iloc[y][i:i+num_reps].values])               for y in range(0,len(xlabels))]
+                avgErr =  [stdev([float(x) for x in data.iloc[y][i:i+num_reps].values if str(x) != "nan"])               for y in range(0,len(xlabels))]
                 avgFluoErr.append(avgErr)
 
                 for j in data.iloc[0:].values:
@@ -105,10 +110,10 @@ def create_avg_std_indiv_lists(iterArray, data, num_reps, xlabels):
                 fluo = [0]*num
 
     else:
-        avgFluo =  [mean([float(x) for x in data.iloc[y][1:1+num_reps].values]) 
+        avgFluo =  [mean([float(x) for x in data.iloc[y][1:1+num_reps].values if str(x) != "nan"]) 
             for y in range(0,len(xlabels))]
     
-        avgFluoErr =  [stdev([float(x) for x in data.iloc[y][1:1+num_reps].values])             for y in range(0,len(xlabels))]
+        avgFluoErr =  [stdev([float(x) for x in data.iloc[y][1:1+num_reps].values if str(x) != "nan"])             for y in range(0,len(xlabels))]
         
         for i in data.iloc[0:].values:
             for j in list(i[1:1+num_reps]):
