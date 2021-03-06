@@ -65,7 +65,7 @@ def simplify_yaxis(ytitle, data):
     elif ytitle == "Fold change in fluorescence":
         max_val = 1
     else:
-        raise ValueError("y-axis title must be 'Fluorescence (RFU/OD)' or 'Fold change in fluorescence'")
+        raise ValueError("y-axis title must be 'Fluorescence (RFU/OD)', '(RFU/OD)', or 'Fold change in fluorescence'")
     for i in range(1,len(data.iloc[0]) -1):
         col = data.iloc[:,i]
         for n in range(0,len(col)):
@@ -121,11 +121,37 @@ def create_avg_std_indiv_lists(iterArray, data, num_reps, xlabels):
 
     return avgFluo, avgFluoErr, fluo
 
+    #must have "DMSO" control. add flexibility to include non-dmso controls
+def create_fold_df(iterArray, data, num_reps, xlabels, ylabels):
+    
+    averages = pd.DataFrame()
+
+    counter = 0
+    for i in iterArray:
+        avg =  [mean([float(x) for x in data.iloc[y][i:i+num_reps].values if str(x) != "nan"]) 
+            for y in range(0,len(xlabels))]
+            
+        averages[ylabels[counter]] = avg
+        counter += 1
+
+        #create dataframe for fold change
+    fold = pd.DataFrame()
+        #remove 'dmso' from ylabels
+    ylabels = ylabels[1:]
+    ytitle = "Fold change in fluorescence"
+    for i in ylabels:
+        fold[i] = averages[i]/averages["DMSO"]
+    fold = fold.T
+
+    return ylabels, ytitle, fold
+
+
+
 
 def set_dot_params(num_bars, num_reps):
-    dotSize = (300/(num_bars))**1.2
+    dotSize = (300/(num_bars))**1.3
     offsetSize = (1/(num_bars))*80
-    dotSpacing = [(-0.5 - ((num_reps-2)/2) + 1*x)*offsetSize 
+    dotSpacing = [(-0.5 - ((num_reps-2)/2) + 1*x)*offsetSize*1.5
             for x in range(0,num_reps)]
 
     return dotSize, offsetSize, dotSpacing

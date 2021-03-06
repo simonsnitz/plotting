@@ -26,6 +26,7 @@ plt.rcParams['font.family'] = 'Gargi'
 parser = argparse.ArgumentParser()
 parser.add_argument("-t", "--table", help="Include table")
 parser.add_argument("-d", "--data", help="Plotting data")
+parser.add_argument("-r", "--reference", help="What do I do with the reference values?")
 args = parser.parse_args()
 
 dataSheet = args.data
@@ -42,6 +43,7 @@ data = divide_rfu_od(fluorescence, od600)
     #set titles, xaxis labels, and number of xaxis conditions(x)
 title, xtitle, ytitle, xdata = set_titles_labels(metadata, fluorescence)
 
+                #if args.table == "yes":
 
     #remove "zeros" from yaxis values, to simplify
 ytitle, data = simplify_yaxis(ytitle, data)
@@ -74,8 +76,10 @@ xaxis_min = float(fluorescence.iloc[1,0])/8
 
 
     #Hill sigmoid function
-def sigmoid(x, a, b, c):
-        return a * np.power(x,b) / (np.power(c,b) + np.power(x,b))
+def sigmoid(x, a, b, c, d):
+        return d + (a-d) * np.power(x,b) / (np.power(c,b) + np.power(x,b))
+#def sigmoid(x, a, b, c):
+#        return a * np.power(x,b) / (np.power(c,b) + np.power(x,b))
 
 
     #create x-axis ticks. large number in 3rd position of linspace "100,000" needed to avoid choppy line.
@@ -94,14 +98,17 @@ for i in colors:
     #loop through mutants and plot fitted sigmoid functions. May need to change these parameters.
 median_x = np.median(x)
 half_y = float(max(data.max().values[0:-1]))/2
-initParam = (median_x, half_y, 5)
+initParam = (median_x, half_y, 5, 1)
 #initParam = np.array([1.0,0.9,5.0])
 
 
     #plot curve_fit line based on averages data
 EC50 = []
+
+
+
 for i in range(0,len(labels)):
-    popt, pcov = curve_fit(sigmoid, xdata, avgFluo[i], initParam,  maxfev=10000)
+    popt, pcov = curve_fit(sigmoid, xdata, avgFluo[i], initParam, maxfev=10000)
         
         #add EC50 value if it's not crazy high
     EC50_value = popt[2]

@@ -66,14 +66,14 @@ num_bars = len(iterArray)*len(xlabels)
 dotSize, offsetSize, dotSpacing = set_dot_params(num_bars, num_reps)
 
 
-    #TODO Figure out a formula that sets good bar width for any number of bars
+    # Figure out a formula that sets good bar width for any number of bars
     #CHANGE THIS. Dynamically set bar width based on number of bars ???
 num_var = len(iterArray)
 num_cond = len(xlabels)
 
 #bar_width = 1.2/(num_bars**0.5)
 bar_width = 1/((num_cond*0.5)*(num_var*0.6))
-#bar_width = 0.3
+#bar_width = 0.25
 
 bar = [(-0.5 - ((len(legendLabels)-2)/2) + x)*bar_width 
             for x in range(0,len(legendLabels))]
@@ -83,11 +83,11 @@ bar = [(-0.5 - ((len(legendLabels)-2)/2) + x)*bar_width
 counter = 0
 
 for i in range(0,len(avgFluo)):
-    plt.bar(x+ bar[i], avgFluo[i], bar_width, label=legendLabels[i], edgecolor='#000000', color=colors[i], zorder=0, linewidth=3, yerr=avgFluoErr[i], error_kw=dict(lw=1.5, capsize=5, capthick=1.5))
+    plt.bar(x+ bar[i], avgFluo[i], bar_width, label=legendLabels[i], edgecolor='#000000', color=colors[i], zorder=0, linewidth=3, yerr=avgFluoErr[i], error_kw=dict(lw=2, capsize=5, capthick=2))
    
 
         #plot individual data points if there are fewer than 12 bars.
-    if num_bars < 12 and num_reps > 1:
+    if num_bars < 17 and num_reps > 1:
         for j in range(0,len(xlabels)):
             for k in range(0, num_reps):
                 plt.scatter(x[j]+bar[i], fluo[counter+k], s=dotSize, facecolor="None", edgecolors='#000000', zorder=1, linewidth=2, transform=trans+offset(dotSpacing[k]))
@@ -102,22 +102,22 @@ for i in range(0,len(avgFluo)):
 
     #set axis/legend labels, axis tick marks, and title
 ax.set_xticks(x)
-ax.set_xticklabels(xlabels)
-ax.set_xlabel(xtitle, fontsize=20)
-ax.set_ylabel(ytitle, fontsize=20)
+ax.set_xticklabels(xlabels,fontsize=20)
+ax.set_xlabel(xtitle, fontsize=26)
+ax.set_ylabel(ytitle, fontsize=26)
 plt.title(title, fontsize=22)
 
-leg = ax.legend(prop={'size':15})
+leg = ax.legend(prop={'size':20})
 for legobj in leg.legendHandles:
     legobj.set_linewidth(1.0)
 
 
     #styling
-ax.tick_params(axis='y', which='major', length=2, width=1, labelsize=18)
+ax.tick_params(axis='y', which='major', length=2, width=1, labelsize=22)
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
-fig.tight_layout()
-fig.set_size_inches(9,9)
+#fig.tight_layout()
+fig.set_size_inches(12,9)
 
     #show the figure and add prompt to decide whether or not to save it.
 plt.show()

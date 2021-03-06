@@ -65,7 +65,8 @@ dotSize, offsetSize, dotSpacing = set_dot_params(num_bars, num_reps)
     #dynamically set bar width based on number of bars
 print(num_bars)
 #bar_width = 2*(1/(num_bars**0.8))
-bar_width = 1.2/(num_bars**0.5)
+#bar_width = 1.2/(num_bars**0.5)
+bar_width = 0.35
 
 
 counter = 0
@@ -86,16 +87,16 @@ if num_bars > 13:
 else:
     ax.tick_params(axis='x', which='major', length=2, width=1, labelsize=18)
 
-
-#plt.xticks(xlabels, fontsize=16, rotation=45)
-plt.xticks(xlabels, fontsize=16)
-plt.xlabel(xtitle, fontsize=18)
-plt.ylabel(ytitle, fontsize=18)
-plt.title(title, fontsize=22)
+ax.set_ylim([0,None])
+plt.xticks(xlabels, fontsize=20, rotation=45)
+#plt.xticks(xlabels, fontsize=16)
+plt.xlabel(xtitle, fontsize=26)
+plt.ylabel(ytitle, fontsize=26)
+plt.title(title, fontsize=24)
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
-ax.tick_params(axis='y', which='major', length=2, width=1, labelsize=18)
-fig.set_size_inches(9,9)
+ax.tick_params(axis='y', which='major', length=2, width=1, labelsize=22)
+fig.set_size_inches(12,8)
 
 plt.show()
 

@@ -104,6 +104,8 @@ for n in range(0,5):
 
 #foldOrtho = foldOrtho.T
 
+print(foldOrtho)
+
 #custom colormap function
 def NonLinCdict(steps, hexcol_array):
     cdict = {'red': (), 'green': (), 'blue': ()}
