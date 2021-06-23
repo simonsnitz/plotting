@@ -36,7 +36,7 @@ bar_colors = set_colors(metadata, xlabels)
 
 
     #remove "zeros" from yaxis values, to simplify
-ytitle, data = simplify_yaxis(ytitle, data)
+#ytitle, data = simplify_yaxis(ytitle, data)
 
 
     #determine the number of replicates in the dataset

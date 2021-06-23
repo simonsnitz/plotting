@@ -112,6 +112,7 @@ for i in range(0,len(labels)):
         
         #add EC50 value if it's not crazy high
     EC50_value = popt[2]
+    print(EC50_value)
     if EC50_value <= 1000:
         EC50.append(round(popt[2],1))
     else:
@@ -151,9 +152,9 @@ if args.table == "yes":
     #Extend the xaxis max and min limits to give space on xaxis
 plt.xlim(xaxis_min, xaxis_max)
 
-plt.title(title, fontsize=22)
-plt.ylabel(ytitle, fontsize=20)
-plt.xlabel(xtitle, fontsize=20)
+#plt.title(title, fontsize=22)
+plt.ylabel(ytitle, fontsize=24)
+plt.xlabel(xtitle, fontsize=24)
 
     #should be symlog, but tick spacing gets screwed up
 ax.set_xscale('log')
@@ -165,7 +166,7 @@ ax.spines['right'].set_visible(False)
 ax.spines['top'].set_visible(False)
 
 #ax.xaxis.set_major_locator(ticker.MultipleLocator(10))
-plt.legend(labels, prop={'size':15}, loc="best")
+plt.legend(labels, prop={'size':20}, loc="best")
 
 fig.set_size_inches(9,9)
 
