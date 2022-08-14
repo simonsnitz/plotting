@@ -56,6 +56,7 @@ def set_colors(metadata, labels):
     return colors
 
 
+
 def simplify_yaxis(ytitle, data):
     if ytitle == "Fluorescence (RFU/OD)" or "(RFU/OD)":
         max_val = 10**(len(str(int(data.iloc[:,1:-1].max().max())))-1)

@@ -59,18 +59,18 @@ ylabels, ytitle, fold = create_fold_df(iterArray, data, num_reps, xlabels, ylabe
 
 
 
-wildtype = fold.iloc[:,-1]
+#wildtype = fold.iloc[:,-1]
 
-perc_wt = pd.DataFrame()
+# perc_wt = pd.DataFrame()
 
 
-for i in range(0,fold.shape[1]):
-    perc = fold.iloc[:,i] / wildtype
-    perc_wt[i] = perc
+# for i in range(0,fold.shape[1]):
+#     perc = fold.iloc[:,i] / wildtype
+#     perc_wt[i] = perc
 
-print(perc_wt)
+# print(perc_wt)
 
-'''
+#''
     #create dataframe for averages
 averages = pd.DataFrame()
 
@@ -92,15 +92,21 @@ for i in ylabels:
     fold[i] = averages[i]/averages["DMSO"]
 fold = fold.T
 
-'''
+#'''
+
+    #get max value to set y-axis limit
+# max_nums = []
+# for i in perc_wt.columns:
+#     max_nums.append(perc_wt[i].max())
+# max_value = round(1.2*(max(max_nums)),0)
 
     #get max value to set y-axis limit
 max_nums = []
-for i in perc_wt.columns:
-    max_nums.append(perc_wt[i].max())
+for i in fold.columns:
+    max_nums.append(fold[i].max())
 max_value = round(1.2*(max(max_nums)),0)
 
-#print(max_value)
+print(max_value)
 
 #custom colormap function
 def NonLinCdict(steps, hexcol_array):
@@ -112,9 +118,10 @@ def NonLinCdict(steps, hexcol_array):
         cdict['blue'] = cdict['blue'] + ((s, rgb[2], rgb[2]),)
     return cdict
 
-#hc = ['#ffffff','#009BFF', '#C100FF']
-hc = ['#0400ff','#ffffff','#ffd000', '#ff001e', '#ff001e']
-th = [0,0.1, 0.3,0.6,1]
+hc = ['#ffffff','#009BFF', '#C100FF']
+#hc = ['#0400ff','#ffffff','#ffd000', '#ff001e', '#ff001e']
+th = [1, 1.5, 2]
+#th = [0,0.1, 0.3,0.6,1]
 
 cdict = NonLinCdict(th, hc)
 cm = LinearSegmentedColormap('test', cdict)
@@ -124,8 +131,8 @@ sns.set(font_scale=1.5)
 
 
 #create seaborn heatmap
-#ax = sns.heatmap(fold, vmin=0, vmax= max_value, annot=True,fmt='.0f',yticklabels= ylabels, xticklabels= xlabels, linewidths=1, linecolor="#7a7a7a", cmap=cm)
-ax = sns.heatmap(perc_wt, vmin=0, vmax= max_value,yticklabels= ylabels, xticklabels= xlabels,linewidths=0.5, linecolor="#7a7a7a", cmap=cm)
+ax = sns.heatmap(fold, vmin=0, vmax= max_value, annot=True,fmt='.0f',yticklabels= ylabels, xticklabels= xlabels, linewidths=1, linecolor="#7a7a7a", cmap=cm)
+#ax = sns.heatmap(perc_wt, vmin=0, vmax= max_value,yticklabels= ylabels, xticklabels= xlabels,linewidths=0.5, linecolor="#7a7a7a", cmap=cm)
 plt.title(title)
 plt.xlabel(xtitle)
 plt.ylabel(ytitle)

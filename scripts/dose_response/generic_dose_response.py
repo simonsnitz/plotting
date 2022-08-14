@@ -64,6 +64,7 @@ labels = [data.columns[x][:-2] for x in iterArray]
     #set colors to use for bars
 colors = set_colors(metadata, labels)
 
+colors = ["#0008ff","#f59700","#088000"]
 
     #create nested lists for the averages, standard deviations, 
         #and individual data points
@@ -118,7 +119,7 @@ for i in range(0,len(labels)):
     else:
         EC50.append("N/A")
     
-    plt.plot(x, sigmoid(x, *popt), color = colors[i], label='fit')
+    plt.plot(x, sigmoid(x, *popt), color = colors[i], label='fit', lw=3.5)
         #add error bar
     #plt.bar(xdata,avgFluo[i], yerr=avgFluoErr[i],visible=False, color='black', error_kw=dict(lw=1,capsize=3,capthick=1), label="error")
 
@@ -127,7 +128,7 @@ for i in range(0,len(labels)):
 numColumns = len(data.columns)
 for i in range(1,numColumns-1):
     variant = data.columns.values[i]
-    plt.plot(xdata, data.loc[:,variant],color = colorDots[i-1], marker='o', linestyle='None')
+    plt.plot(xdata, data.loc[:,variant],color = colorDots[i-1], markersize=8, marker='o', linestyle='None')
 
 
     #create a table with information on background signal and estimated EC50 values
@@ -168,7 +169,7 @@ ax.spines['top'].set_visible(False)
 #ax.xaxis.set_major_locator(ticker.MultipleLocator(10))
 plt.legend(labels, prop={'size':20}, loc="best")
 
-fig.set_size_inches(9,9)
+fig.set_size_inches(14,8)
 
 plt.show()
 

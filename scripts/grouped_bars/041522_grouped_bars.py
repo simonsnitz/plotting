@@ -71,8 +71,8 @@ num_var = len(iterArray)
 num_cond = len(xlabels)
 
 #bar_width = 1.2/(num_bars**0.5)
-# bar_width = 1/((num_cond*0.5)*(num_var*0.6))
-bar_width = 0.25
+#bar_width = 1/((num_cond*0.5)*(num_var*0.6))
+bar_width = 0.13
 
 bar = [(-0.5 - ((len(legendLabels)-2)/2) + x)*bar_width 
             for x in range(0,len(legendLabels))]
@@ -82,14 +82,14 @@ bar = [(-0.5 - ((len(legendLabels)-2)/2) + x)*bar_width
 counter = 0
 
 for i in range(0,len(avgFluo)):
-    plt.bar(x+ bar[i], avgFluo[i], bar_width, label=legendLabels[i], edgecolor='#000000', color=colors[i], zorder=0, linewidth=3, yerr=avgFluoErr[i], error_kw=dict(lw=2, capsize=5, capthick=2))
+    plt.bar(x+ bar[i], avgFluo[i], bar_width, label=legendLabels[i], edgecolor='#000000', color=colors[i], zorder=0, linewidth=3)
    
 
         #plot individual data points if there are fewer than 12 bars.
-    if num_bars < 100 and num_reps > 1:
+    if num_reps > 1:
         for j in range(0,len(xlabels)):
             for k in range(0, num_reps):
-                plt.scatter(x[j]+bar[i], fluo[counter+k], s=80, facecolor="None", edgecolors='#000000', zorder=1, linewidth=2, transform=trans+offset((dotSpacing[k])*0.8))
+                plt.scatter(x[j]+bar[i], fluo[counter+k], s=dotSize, facecolor="None", edgecolors='#000000', zorder=1, linewidth=2)
             counter += num_reps
         
         ax.tick_params(axis='x', which='major', length=2, width=1, labelsize=14)
@@ -116,7 +116,7 @@ ax.tick_params(axis='y', which='major', length=2, width=1, labelsize=22)
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 #fig.tight_layout()
-fig.set_size_inches(12,9)
+fig.set_size_inches(12,8)
 
     #show the figure and add prompt to decide whether or not to save it.
 plt.show()
