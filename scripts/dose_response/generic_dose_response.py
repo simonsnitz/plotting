@@ -89,6 +89,8 @@ x = np.linspace(1e-8,(xaxis_max/2),100000)
 
     #create list of colors for dots (individual data points)
         #still working on making this list with list comprehension
+colors = ["#fca503", "#00751b", "#264aff", "#db26ff"]
+
 colorDots = []
 for i in colors:
     colorDots.append(str(i))
@@ -99,12 +101,13 @@ for i in colors:
     #loop through mutants and plot fitted sigmoid functions. May need to change these parameters.
 median_x = np.median(x)
 half_y = float(max(data.max().values[0:-1]))/2
-initParam = (median_x, half_y, 5, 1)
-#initParam = np.array([1.0,0.9,5.0])
+#initParam = (median_x, half_y, 5, 1)
+initParam = np.array([1.0,0.9,1.0,10.0])
 
 
     #plot curve_fit line based on averages data
 EC50 = []
+
 
 
 
@@ -119,9 +122,9 @@ for i in range(0,len(labels)):
     else:
         EC50.append("N/A")
     
-    plt.plot(x, sigmoid(x, *popt), color = colors[i], label='fit', lw=3.5)
+    plt.plot(x, sigmoid(x, *popt), color = colors[i], label='fit', lw=3)
         #add error bar
-    #plt.bar(xdata,avgFluo[i], yerr=avgFluoErr[i],visible=False, color='black', error_kw=dict(lw=1,capsize=3,capthick=1), label="error")
+    #plt.bar(xdata,avgFluo[i], yerr=avgFluoErr[i],visible=False, color='black', error_kw=dict(lw=2,capsize=6,capthick=2), label="error")
 
 
     #plot individual data points as dots

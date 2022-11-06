@@ -106,8 +106,10 @@ for i in range(0,len(avgFluo)):
     #set axis/legend labels, axis tick marks, and title
 ax.set_xlabel(xtitle, fontsize=24)
 ax.set_ylabel(ytitle, fontsize=24)
+ax.set_xlim(3,9)
+ax.set_ylim(0,4500)
 #plt.title(title, fontsize=18)
-ax.legend(prop={'size':24})
+ax.legend(prop={'size':20})
 
 
     #styling
@@ -116,7 +118,7 @@ ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 ax.tick_params(axis='both', which='major', labelsize=20)
 fig.tight_layout()
-fig.set_size_inches(18,9)
+fig.set_size_inches(18,8)
 
     #show the figure and add prompt to decide whether or not to save it.
 plt.show()

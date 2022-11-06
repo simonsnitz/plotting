@@ -72,7 +72,7 @@ num_cond = len(xlabels)
 
 #bar_width = 1.2/(num_bars**0.5)
 # bar_width = 1/((num_cond*0.5)*(num_var*0.6))
-bar_width = 0.25
+bar_width = 0.16
 
 bar = [(-0.5 - ((len(legendLabels)-2)/2) + x)*bar_width 
             for x in range(0,len(legendLabels))]
@@ -89,7 +89,7 @@ for i in range(0,len(avgFluo)):
     if num_bars < 100 and num_reps > 1:
         for j in range(0,len(xlabels)):
             for k in range(0, num_reps):
-                plt.scatter(x[j]+bar[i], fluo[counter+k], s=80, facecolor="None", edgecolors='#000000', zorder=1, linewidth=2, transform=trans+offset((dotSpacing[k])*0.8))
+                plt.scatter(x[j]+bar[i], fluo[counter+k], s=50, facecolor="None", edgecolors='#000000', zorder=1, linewidth=2, transform=trans+offset((dotSpacing[k])*1.5))
             counter += num_reps
         
         ax.tick_params(axis='x', which='major', length=2, width=1, labelsize=14)

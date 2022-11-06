@@ -31,6 +31,7 @@ data = divide_rfu_od(fluorescence, od600)
 title, xtitle, ytitle, xlabels, x = set_titles_labels(metadata, data)
 
 
+
     #set colors to use for bars
 bar_colors = set_colors(metadata, xlabels)
     #override color scheme
@@ -54,6 +55,7 @@ iterArray = [0]
         #and individual data points
 avgFluo, avgFluoErr, fluo = create_avg_std_indiv_lists(iterArray, data, num_reps, xlabels)
 
+
     #function for positioning individual data points such that they don't overlap
 offset = lambda p: transforms.ScaledTranslation(p/72.0, 0, plt.gcf().dpi_scale_trans)
 trans = plt.gca().transData
@@ -64,10 +66,11 @@ num_bars = len(iterArray)*len(xlabels)
 dotSize, offsetSize, dotSpacing = set_dot_params(num_bars, num_reps)
 
 
+
     #dynamically set bar width based on number of bars
 #bar_width = 2*(1/(num_bars**0.8))
-#bar_width = 1.2/(num_bars**0.5)
-bar_width = 0.45
+bar_width = 1.2/(num_bars**0.5)
+#bar_width = 0.15
 
 
 counter = 0
@@ -75,12 +78,12 @@ counter = 0
 for i in range(0,len(xlabels)):
     
         #plot bars
-    plt.bar(xlabels[i], avgFluo[i], bar_width, color=bar_colors[i], edgecolor='#000000', zorder=0, linewidth=3.5, yerr=avgFluoErr[i], error_kw=dict(lw=2, capsize=5, capthick=2))
+    plt.bar(xlabels[i], avgFluo[i], bar_width, color=bar_colors[i], edgecolor='#000000', zorder=0, linewidth=3.5, yerr=avgFluoErr[i], error_kw=dict(lw=2, capsize=10, capthick=2))
 
         #plot individual data points
     for j in range(0,num_reps):
-        plt.scatter(xlabels[i], fluo[counter+j], s=120, facecolor="None",edgecolors='#000000', zorder=1, linewidth=3, 
-            transform=trans+offset(dotSpacing[j]*0.5)
+        plt.scatter(xlabels[i], fluo[counter+j], s=100, facecolor="None",edgecolors='#000000', zorder=1, linewidth=2, 
+            transform=trans+offset(dotSpacing[j]*0.3)
             )
     counter+=num_reps
     
@@ -91,7 +94,7 @@ else:
     ax.tick_params(axis='x', which='major', length=2, width=1, labelsize=18)
 
 ax.set_ylim([0,None])
-plt.xticks(xlabels, fontsize=18, rotation=45)
+plt.xticks(xlabels, fontsize=22, rotation=90)
 #plt.xticks(xlabels, fontsize=16)
 plt.xlabel(xtitle, fontsize=26)
 plt.ylabel(ytitle, fontsize=26)
@@ -103,7 +106,7 @@ ax.spines['right'].set_visible(False)
 # plt.ylim(1,200)
 
 ax.tick_params(axis='y', which='major', length=2, width=1, labelsize=22)
-fig.set_size_inches(24,12)
+fig.set_size_inches(4,8)
 
 plt.show()
 
