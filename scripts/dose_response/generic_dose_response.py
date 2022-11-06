@@ -64,6 +64,7 @@ labels = [data.columns[x][:-2] for x in iterArray]
     #set colors to use for bars
 colors = set_colors(metadata, labels)
 
+colors = ["#0008ff","#f59700","#088000"]
 
     #create nested lists for the averages, standard deviations, 
         #and individual data points
@@ -88,6 +89,8 @@ x = np.linspace(1e-8,(xaxis_max/2),100000)
 
     #create list of colors for dots (individual data points)
         #still working on making this list with list comprehension
+colors = ["#fca503", "#00751b", "#264aff", "#db26ff"]
+
 colorDots = []
 for i in colors:
     colorDots.append(str(i))
@@ -98,12 +101,13 @@ for i in colors:
     #loop through mutants and plot fitted sigmoid functions. May need to change these parameters.
 median_x = np.median(x)
 half_y = float(max(data.max().values[0:-1]))/2
-initParam = (median_x, half_y, 5, 1)
-#initParam = np.array([1.0,0.9,5.0])
+#initParam = (median_x, half_y, 5, 1)
+initParam = np.array([1.0,0.9,1.0,10.0])
 
 
     #plot curve_fit line based on averages data
 EC50 = []
+
 
 
 
@@ -118,16 +122,16 @@ for i in range(0,len(labels)):
     else:
         EC50.append("N/A")
     
-    plt.plot(x, sigmoid(x, *popt), color = colors[i], label='fit')
+    plt.plot(x, sigmoid(x, *popt), color = colors[i], label='fit', lw=3)
         #add error bar
-    #plt.bar(xdata,avgFluo[i], yerr=avgFluoErr[i],visible=False, color='black', error_kw=dict(lw=1,capsize=3,capthick=1), label="error")
+    #plt.bar(xdata,avgFluo[i], yerr=avgFluoErr[i],visible=False, color='black', error_kw=dict(lw=2,capsize=6,capthick=2), label="error")
 
 
     #plot individual data points as dots
 numColumns = len(data.columns)
 for i in range(1,numColumns-1):
     variant = data.columns.values[i]
-    plt.plot(xdata, data.loc[:,variant],color = colorDots[i-1], marker='o', linestyle='None')
+    plt.plot(xdata, data.loc[:,variant],color = colorDots[i-1], markersize=8, marker='o', linestyle='None')
 
 
     #create a table with information on background signal and estimated EC50 values
@@ -168,7 +172,7 @@ ax.spines['top'].set_visible(False)
 #ax.xaxis.set_major_locator(ticker.MultipleLocator(10))
 plt.legend(labels, prop={'size':20}, loc="best")
 
-fig.set_size_inches(9,9)
+fig.set_size_inches(14,8)
 
 plt.show()
 

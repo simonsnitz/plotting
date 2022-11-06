@@ -12,7 +12,7 @@ from plotting_functions import *
     #create figure
 fig, ax = plt.subplots()
     #set font
-plt.rcParams['font.family'] = 'Gargi'
+# plt.rcParams['font.family'] = 'Gargi'
 
 
     #parse arguments
@@ -42,10 +42,14 @@ if args.type == "f" or args.type == "fluo" or args.type == "fluorescence":
     print("fluorescence")
     data = fluorescence
     ytitle = r'$RFU$'
+        #set X-axis condition labels
+    xlabels = data.loc[0:]['Time'].values
 elif args.type == "o" or args.type == "od" or args.type == "od600":
     print("od600")
     data = od600
     ytitle = r'$OD_{600}$'
+        #set X-axis condition labels
+    xlabels = data.loc[0:]['Time'].values
 elif args.type == "of" or args.type == "o/f" or args.type == "od/fluo":
     print("rfu/od")
     data = rfu_od
@@ -55,8 +59,7 @@ else:
     exit()
 
 
-    #set X-axis condition labels
-xlabels = data.loc[0:]['Time'].values
+
     #convert seconds to hours
 xlabels = [i/3600 for i in xlabels]
 xtitle = xtitle + " (hours)"
@@ -93,27 +96,29 @@ avgFluoBottom = [ [avgFluo[i][j] - avgFluoErr[i][j] for j in range(0,len(avgFluo
 for i in range(0,len(avgFluo)):
     
         #plots lines with vertical lines to represent error
-    plt.errorbar(xlabels, avgFluo[i], label=legendLabels[i], color=colors[i], zorder=0, linewidth=3, yerr=avgFluoErr[i], elinewidth=2)
+    #plt.errorbar(xlabels, avgFluo[i], label=legendLabels[i], color=colors[i], zorder=0, linewidth=3, yerr=avgFluoErr[i], elinewidth=2)
     
         #plots lines with "fill between" to represent error
-    #plt.plot(xlabels, avgFluo[i], label=legendLabels[i], color=colors[i], zorder=0, linewidth=3)
-    #plt.fill_between(xlabels, avgFluoTop[i], avgFluoBottom[i], color=colors[i], alpha=0.5)
+    plt.plot(xlabels, avgFluo[i], label=legendLabels[i], color=colors[i], zorder=0, linewidth=3)
+    plt.fill_between(xlabels, avgFluoTop[i], avgFluoBottom[i], color=colors[i], alpha=0.3)
 
 
     #set axis/legend labels, axis tick marks, and title
-ax.set_xlabel(xtitle, fontsize=18)
-ax.set_ylabel(ytitle, fontsize=18)
-plt.title(title, fontsize=18)
-ax.legend(prop={'size':15})
+ax.set_xlabel(xtitle, fontsize=24)
+ax.set_ylabel(ytitle, fontsize=24)
+ax.set_xlim(3,9)
+ax.set_ylim(0,4500)
+#plt.title(title, fontsize=18)
+ax.legend(prop={'size':20})
 
 
     #styling
 ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
-ax.tick_params(axis='both', which='major', labelsize=16)
+ax.tick_params(axis='both', which='major', labelsize=20)
 fig.tight_layout()
-fig.set_size_inches(12,9)
+fig.set_size_inches(18,8)
 
     #show the figure and add prompt to decide whether or not to save it.
 plt.show()

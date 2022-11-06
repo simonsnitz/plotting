@@ -24,9 +24,9 @@ bar_width = 0.4
 #create a dataframe
 dfe = pd.DataFrame()
 #load metadata from excel file
-metadata = pd.read_excel(dataSeet, sheet_name="metadata")
+metadata = pd.read_excel(dataSheet, sheet_name="metadata")
 
-#data = pd.read_csv(str(dataSheet))
+#data = pd.read_csv(dataSheet)
 
 #set graph and axis titles
 title = metadata.loc[0,"Title"]
