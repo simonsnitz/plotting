@@ -8,7 +8,6 @@ import matplotlib.ticker as ticker
 import matplotlib.transforms as transforms
 from pathlib import Path 
 from statistics import mean, stdev
-import math
 import sys
 import argparse
 
@@ -64,8 +63,6 @@ labels = [data.columns[x][:-2] for x in iterArray]
     #set colors to use for bars
 colors = set_colors(metadata, labels)
 
-colors = ["#0008ff","#f59700","#088000"]
-
     #create nested lists for the averages, standard deviations, 
         #and individual data points
 avgFluo, avgFluoErr, fluo = create_avg_std_indiv_lists(iterArray, data, num_reps, xdata)
@@ -88,8 +85,6 @@ x = np.linspace(1e-8,(xaxis_max/2),100000)
 
 
     #create list of colors for dots (individual data points)
-        #still working on making this list with list comprehension
-colors = ["#fca503", "#00751b", "#264aff", "#db26ff"]
 
 colorDots = []
 for i in colors:
@@ -101,14 +96,12 @@ for i in colors:
     #loop through mutants and plot fitted sigmoid functions. May need to change these parameters.
 median_x = np.median(x)
 half_y = float(max(data.max().values[0:-1]))/2
-#initParam = (median_x, half_y, 5, 1)
-initParam = np.array([1.0,0.9,1.0,10.0])
+initParam = (median_x, half_y, 5, 1)
+#initParam = np.array([1.0,0.9,1.0,10.0])
 
 
     #plot curve_fit line based on averages data
 EC50 = []
-
-
 
 
 for i in range(0,len(labels)):
@@ -156,7 +149,7 @@ if args.table == "yes":
     #Extend the xaxis max and min limits to give space on xaxis
 plt.xlim(xaxis_min, xaxis_max)
 
-#plt.title(title, fontsize=22)
+plt.title(title, fontsize=22)
 plt.ylabel(ytitle, fontsize=24)
 plt.xlabel(xtitle, fontsize=24)
 

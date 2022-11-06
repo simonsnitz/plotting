@@ -8,7 +8,7 @@ from pathlib import Path
 import math
 from statistics import mean, stdev
 
-sys.path.append('../')
+
 from plotting_functions import *
 
 #create figure and set font
@@ -36,7 +36,6 @@ title, xtitle, ytitle, xlabels, x = set_titles_labels(metadata, data)
 bar_colors = set_colors(metadata, xlabels)
     #override color scheme
 #bar_colors = ["#C28CFF" for i in range(0,len(xlabels))]
-bar_colors = ["#52BFFF" for i in range(0,len(xlabels))]
 
 
     #remove "zeros" from yaxis values, to simplify
@@ -83,7 +82,7 @@ for i in range(0,len(xlabels)):
         #plot individual data points
     for j in range(0,num_reps):
         plt.scatter(xlabels[i], fluo[counter+j], s=100, facecolor="None",edgecolors='#000000', zorder=1, linewidth=2, 
-            transform=trans+offset(dotSpacing[j]*0.3)
+            transform=trans+offset(dotSpacing[j]*0.8)
             )
     counter+=num_reps
     
@@ -106,105 +105,6 @@ ax.spines['right'].set_visible(False)
 # plt.ylim(1,200)
 
 ax.tick_params(axis='y', which='major', length=2, width=1, labelsize=22)
-fig.set_size_inches(4,8)
+fig.set_size_inches(16,8)
 
 plt.show()
-
-
-if __name__ == "__main__":
-
-    #load metadata from excel file
-    metadata = pd.read_excel(dataSheet, sheet_name="metadata")
-    fluorescence = pd.read_excel(dataSheet, sheet_name="fluorescence")
-    od600 = pd.read_excel(dataSheet, sheet_name="od600")
-
-
-    #create new dataframe for fluorescence/od600
-    data = pd.DataFrame().reindex_like(fluorescence)
-
-    for i in list(fluorescence.keys()):
-        try:
-            data[i] = fluorescence[i]/od600[i]
-        except:
-            data[i] = fluorescence[i]
-
-
-        #set graph and axis titles
-    title = metadata.loc[0,"Title"]
-    xtitle = metadata.loc[0,"Xtitle"]
-    ytitle = metadata.loc[0,"Ytitle"]
-        #set X-axis condition labels
-    xlabels = data.loc[0:]['Construct'].dropna().values
-        #set number X-axis conditions
-    x = np.arange(len(xlabels))
-
-
-    #set bar colors from metadata. If only one color provided, set all bars to that same color.
-    bar_colors = metadata.loc[:,"Colors"].dropna().values
-
-    bar_colors = ["#ff932e"]
-
-    if len(bar_colors) == 1:
-        bar_colors = [bar_colors[0]]*(len(xlabels))
-    elif len(bar_colors) != len(xlabels):
-        raise ValueError("Invalid number of colors given. Need to provide one color or number equivalent to number of conditions")
-
-    #remove zeros for rfu/od to simplify y-axis
-    if ytitle == "Fluorescence (RFU/OD)" or "(RFU/OD)":
-        max_val = 10**(len(str(int(data.iloc[:,1:-1].max().max())))-1)
-        log10 = int(math.log10(max_val))
-        ytitle = r'$(RFU/OD) \times 10^' + str(log10) +'$'
-
-    elif ytitle == "Fold change in fluorescence":
-        max_val = 1
-    else:
-        raise ValueError("y-axis title must be 'Fluorescence (RFU/OD)' or 'Fold change in fluorescence'")
-    for i in range(1,len(data.iloc[0]) -1):
-        col = data.iloc[:,i]
-        for n in range(0,len(col)):
-            data.iloc[:,i][n] = col[n]/max_val
-
-
-        #get the number of replicates from the column labels
-    last_char = [ x[-1] for x in data.columns.values]
-    num_reps = []
-    for i in last_char:
-        try:
-            num_reps.append(int(i))
-        except:
-            pass
-    num_reps = max(num_reps)
-
-
-        #create lists for averages and standard deviations of all conditions    
-    if len(iterArray) > 1:
-        avgFluo = []
-        for i in iterArray:
-            avg =  [mean([float(x) for x in data.iloc[y][i:i+num_reps].values]) 
-                for y in range(0,len(xlabels))]
-            avgFluo.append(avg)
-    
-        avgFluoErr = []
-        if num_reps > 1:
-            avgErr =  [stdev([float(x) for x in data.iloc[y][i:i+num_reps].values]) 
-                for y in range(0,len(xlabels))]
-            avgFluoErr.append(avgErr)
-        else:
-            num = len(avgFluo)
-            avgFluoErr = [0]*num 
-
-    else:
-        avgFluo =  [mean([float(x) for x in data.iloc[y][1:1+num_reps].values]) 
-            for y in range(0,len(xlabels))]
-    
-        avgFluoErr =  [stdev([float(x) for x in data.iloc[y][1:1+num_reps].values]) 
-            for y in range(0,len(xlabels))]
-
-    #create a list of all individual data points
-    fluo = []
-    for i in data.iloc[0:].values:
-        for j in list(i[1:1+num_reps]):
-            fluo.append(float(j))
-
-    #dotSpacing = [(-0.5 - ((num_reps-2)/2) + 1*x)*offsetSize for x in range(0,num_reps)]
-

@@ -89,7 +89,7 @@ for i in range(0,len(avgFluo)):
     if num_bars < 100 and num_reps > 1:
         for j in range(0,len(xlabels)):
             for k in range(0, num_reps):
-                plt.scatter(x[j]+bar[i], fluo[counter+k], s=50, facecolor="None", edgecolors='#000000', zorder=1, linewidth=2, transform=trans+offset((dotSpacing[k])*1.5))
+                plt.scatter(x[j]+bar[i], fluo[counter+k], s=50, facecolor="None", edgecolors='#000000', zorder=1, linewidth=2, transform=trans+offset((dotSpacing[k])*1.0))
             counter += num_reps
         
         ax.tick_params(axis='x', which='major', length=2, width=1, labelsize=14)
@@ -116,7 +116,7 @@ ax.tick_params(axis='y', which='major', length=2, width=1, labelsize=22)
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 #fig.tight_layout()
-fig.set_size_inches(12,9)
+fig.set_size_inches(12,6)
 
     #show the figure and add prompt to decide whether or not to save it.
 plt.show()

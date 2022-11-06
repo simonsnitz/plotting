@@ -48,9 +48,6 @@ def set_colors(metadata, labels):
     if len(colors) == 1:
         colors = [colors[0]]*(len(labels))
     elif len(colors) != len(labels):
-        print("colors = "+str(colors))
-        print("labels = "+str(labels))
-
         warnings.warn("Invalid number of colors given. Need to provide one color or number equivalent to number of conditions. Default color set to boring blue", stacklevel=2)
         colors = ["#12b0ff"]*len(labels)
     return colors
