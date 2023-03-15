@@ -107,7 +107,7 @@ for i in range(0,len(avgFluo)):
 ax.set_xlabel(xtitle, fontsize=24)
 ax.set_ylabel(ytitle, fontsize=24)
 ax.set_xlim(3,9)
-ax.set_ylim(0,4500)
+ax.set_ylim(0,15000)
 #plt.title(title, fontsize=18)
 ax.legend(prop={'size':20})
 
