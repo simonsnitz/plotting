@@ -57,6 +57,8 @@ colors = set_colors(metadata, ylabels)
 
 ylabels, ytitle, fold = create_fold_df(iterArray, data, num_reps, xlabels, ylabels)
 
+    # add "DMSO" label back in. This is unnecessary and should be fixed later
+ylabels.insert(0,"DMSO")
 
 
 #wildtype = fold.iloc[:,-1]
@@ -78,6 +80,7 @@ counter = 0
 for i in iterArray:
     avg =  [mean([float(x) for x in data.iloc[y][i:i+num_reps].values if str(x) != "nan"]) 
         for y in range(0,len(xlabels))]
+
             
     averages[ylabels[counter]] = avg
     counter += 1
@@ -100,6 +103,7 @@ fold = fold.T
 #     max_nums.append(perc_wt[i].max())
 # max_value = round(1.2*(max(max_nums)),0)
 
+
     #get max value to set y-axis limit
 max_nums = []
 for i in fold.columns:
@@ -118,20 +122,31 @@ def NonLinCdict(steps, hexcol_array):
         cdict['blue'] = cdict['blue'] + ((s, rgb[2], rgb[2]),)
     return cdict
 
-hc = ['#ffffff','#009BFF', '#C100FF']
-#hc = ['#0400ff','#ffffff','#ffd000', '#ff001e', '#ff001e']
-th = [1, 1.5, 2]
+#hc = ['#ffffff','#009BFF', '#C100FF']
+#hc = ['#ffffff','#0062ff']
+hc = ['#0400ff','#ffffff','#ffd000', '#ff001e', '#ff001e']
+#th = [1, 1.5, 2]
+th = [0,0.1, 0.3,0.6,1]
 #th = [0,0.1, 0.3,0.6,1]
 
 cdict = NonLinCdict(th, hc)
 cm = LinearSegmentedColormap('test', cdict)
 
 #increase font size by a little
-sns.set(font_scale=1.5)
+sns.set(font_scale=1)
 
+# colormap = sns.color_palette("Blues", 12)
+
+norm = matplotlib.colors.Normalize(-1,1)
+colors = [[norm(-1), "white"],
+          [norm(-0.3), "#96a3ff"],
+          [norm( 0.0), "#5266ff"],
+          [norm( 1.0), "#001eff"]]
+
+cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colors)
 
 #create seaborn heatmap
-ax = sns.heatmap(fold, vmin=0, vmax= max_value, annot=True,fmt='.0f',yticklabels= ylabels, xticklabels= xlabels, linewidths=1, linecolor="#7a7a7a", cmap=cm)
+ax = sns.heatmap(fold, vmin=1, vmax= max_value,fmt='.0f',yticklabels= ylabels, xticklabels= xlabels, linewidths=1, linecolor="#7a7a7a", cmap=cmap)
 #ax = sns.heatmap(perc_wt, vmin=0, vmax= max_value,yticklabels= ylabels, xticklabels= xlabels,linewidths=0.5, linecolor="#7a7a7a", cmap=cm)
 plt.title(title)
 plt.xlabel(xtitle)
